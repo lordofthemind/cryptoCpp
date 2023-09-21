@@ -1,0 +1,93 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Rabin-ElGamal Encryption</title>
+</head>
+<body>
+    <h1>Rabin-ElGamal Encryption</h1>
+    <label for="message">Enter a message:</label>
+    <input type="text" id="message">
+    <button onclick="encrypt()">Encrypt</button>
+    <p>Encrypted Message:</p>
+    <input type="text" id="encryptedMessage" readonly>
+    <button onclick="decrypt()">Decrypt</button>
+    <p>Decrypted Message:</p>
+    <input type="text" id="decryptedMessage" readonly>
+
+    <script>
+        // Simplified values (not suitable for real-world use)
+        const p = 11; // A prime number
+        const q = 17; // Another prime number
+        const n = p * q; // Modulus
+        const messageMax = n - 1;
+
+        // Generate a random number that is relatively prime to n
+        function generateRandomRelativePrime() {
+            let e = Math.floor(Math.random() * messageMax) + 1;
+            while (gcd(e, n) !== 1) {
+                e = Math.floor(Math.random() * messageMax) + 1;
+            }
+            return e;
+        }
+
+        // Calculate the greatest common divisor (GCD) of two numbers
+        function gcd(a, b) {
+            if (b === 0) {
+                return a;
+            }
+            return gcd(b, a % b);
+        }
+
+        // Encrypt the message
+        function encrypt() {
+            const message = document.getElementById('message').value;
+            const m = parseInt(message);
+            
+            if (isNaN(m) || m <= 0 || m >= messageMax) {
+                alert('Invalid message. Please enter a number between 1 and ' + messageMax);
+                return;
+            }
+
+            const e = generateRandomRelativePrime();
+            const c = (m * m) % n;
+
+            document.getElementById('encryptedMessage').value = c;
+        }
+
+        // Decrypt the message
+        function decrypt() {
+            const c = parseInt(document.getElementById('encryptedMessage').value);
+
+            if (isNaN(c)) {
+                alert('Invalid encrypted message.');
+                return;
+            }
+
+            const r = (p + 1) / 4;
+            const s = (q + 1) / 4;
+
+            const x1 = Math.pow(c, r) % p;
+            const x2 = p - x1;
+            const y1 = Math.pow(c, s) % q;
+            const y2 = q - y1;
+
+            const m1 = (x1 * q * q * modInverse(q, p) + y1 * p * p * modInverse(p, q)) % n;
+            const m2 = (x1 * q * q * modInverse(q, p) + y2 * p * p * modInverse(p, q)) % n;
+            const m3 = (x2 * q * q * modInverse(q, p) + y1 * p * p * modInverse(p, q)) % n;
+            const m4 = (x2 * q * q * modInverse(q, p) + y2 * p * p * modInverse(p, q)) % n;
+
+            document.getElementById('decryptedMessage').value = `${m1}, ${m2}, ${m3}, ${m4}`;
+        }
+
+        // Calculate the modular multiplicative inverse
+        function modInverse(a, m) {
+            for (let x = 1; x < m; x++) {
+                if ((a * x) % m === 1) {
+                    return x;
+                }
+            }
+            return 1;
+        }
+    </script>
+</body>
+</html>

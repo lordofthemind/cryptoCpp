@@ -1,0 +1,47 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Diffie-Hellman Key Exchange</title>
+</head>
+<body>
+    <h1>Diffie-Hellman Key Exchange</h1>
+    <p>Enter your private key (Alice):</p>
+    <input type="number" id="alicePrivateKey" min="1" max="10">
+    <button onclick="generateKeys()">Generate Keys</button>
+    <p>Shared Secret Key:</p>
+    <input type="text" id="sharedSecretKey" readonly>
+    
+    <script>
+        // Prime number (shared between Alice and Bob)
+        const prime = 23;
+        
+        // Primitive root modulo prime
+        const primitiveRoot = 5;
+
+        let alicePrivateKey;
+        let bobPrivateKey;
+
+        function generateKeys() {
+            alicePrivateKey = parseInt(document.getElementById('alicePrivateKey').value);
+            if (isNaN(alicePrivateKey) || alicePrivateKey < 1 || alicePrivateKey > 10) {
+                alert('Invalid Alice\'s private key. Please enter a number between 1 and 10.');
+                return;
+            }
+
+            // Bob generates his private key (randomly for this example)
+            bobPrivateKey = Math.floor(Math.random() * 10) + 1;
+
+            // Calculate Alice's public key
+            const alicePublicKey = Math.pow(primitiveRoot, alicePrivateKey) % prime;
+
+            // Calculate Bob's public key
+            const bobPublicKey = Math.pow(primitiveRoot, bobPrivateKey) % prime;
+
+            // Calculate the shared secret key
+            const sharedSecretKey = Math.pow(bobPublicKey, alicePrivateKey) % prime;
+
+            document.getElementById('sharedSecretKey').value = sharedSecretKey;
+        }
+    </script>
+</body>
+</html>
