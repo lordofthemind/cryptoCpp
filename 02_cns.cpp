@@ -13,7 +13,6 @@ int main() {
     }
     cout << endl;
 
-
     cout << "AND Operatin" << endl;
     for (int i = 0; i < len; i++) {
         char result = str[i] & 127;
@@ -21,11 +20,11 @@ int main() {
     }
     cout << endl;
 
-
     cout << "OR Operatin" << endl;
     for (int i = 0; i < len; i++) {
         char result = str[i] | 127;
         cout << result;
     }
+
     return 0;
 }
